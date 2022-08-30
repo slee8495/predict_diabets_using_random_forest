@@ -15,6 +15,24 @@ df %>%
                 triceps = skin_thickness,
                 mass = bmi,
                 pedigree = diabetes_pedigree_function,
-                diabetes = outcome) -> df
+                binary = outcome) %>% 
+  dplyr::mutate(diabetes = recode(binary, "0" = "neg", "1" = "pos")) %>% 
+  dplyr::relocate(diabetes, .before = binary) -> df
+
+
+
+ggplot2::ggplot(data = df, mapping = aes(x = diabetes, fill = factor(diabetes))) +
+  ggplot2::geom_bar()
+
+
+# Now, data partition part
+
+rows <- createDataPartition(df$binary, times = 1, p = 0.7, list = FALSE)
+
+
+train <- df[rows, ]
+test <- df[-rows, ]
+
+
 
 
