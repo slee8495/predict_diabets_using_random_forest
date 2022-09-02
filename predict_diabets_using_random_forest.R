@@ -27,12 +27,27 @@ ggplot2::ggplot(data = df, mapping = aes(x = diabetes, fill = factor(diabetes)))
 
 # Now, data partition part
 
-rows <- createDataPartition(df$binary, times = 1, p = 0.7, list = FALSE)
+rows <- caret::createDataPartition(df$binary, times = 1, p = 0.7, list = FALSE)
 
 
 train <- df[rows, ]
-test <- df[-rows, ]
+train %>% 
+  dplyr::select(-diabetes) -> train
 
+
+test <- df[-rows, ]
+test %>% 
+  dplyr::select(-diabetes) -> test
+
+
+
+
+# Creating Models
+
+model <- train(as.factor(binary) ~ .,
+               data = train,
+               method = "ranger",
+               trControl = caret::trainControl(method = "repeatedcv", number = 2, repeats = 2))
 
 
 
