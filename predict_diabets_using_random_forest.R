@@ -49,5 +49,17 @@ model <- train(as.factor(binary) ~ .,
                method = "ranger",
                trControl = caret::trainControl(method = "repeatedcv", number = 2, repeats = 2))
 
+model
+
+
+# Predict Using Test Set
+
+pred_train <- predict(model, train)
+pred_test <- predict(model, test)
+
+
+# Confusion Matrix
+caret::confusionMatrix(pred_train, as.factor(train$binary))
+caret::confusionMatrix(pred_test, as.factor(test$binary))
 
 
